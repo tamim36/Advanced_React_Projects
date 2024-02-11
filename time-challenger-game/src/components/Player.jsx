@@ -6,6 +6,7 @@ export default function Player() {
 
   const onClickSetPlayerName = () => {
     setPlayerName(inputPlayerName.current.value)
+    inputPlayerName.current.value = ''
   }
 
   return (
