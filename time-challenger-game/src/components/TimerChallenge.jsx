@@ -5,40 +5,55 @@ const TimerChallenge = ({ title, targetTime }) => {
 
   const timer = useRef()
   const resultDialog = useRef()
-  const [ timeExpired, setTimeExpired ] = useState(false)
-  const [ startChallenge, setStartChallenge ] = useState(false)
+  
+  const [timeRemaining, setTimeRemaining] = useState(targetTime * 1000)
+  const timerIsActive = timeRemaining > 0 && timeRemaining < targetTime * 1000
+
+  const handleTimeReset = () => {
+    setTimeRemaining(targetTime * 1000)
+  }
+
+  const handleExpired = () => {
+    clearInterval(timer.current)
+    resultDialog.current.openDialog()
+  }
 
   const handleStart = () => {
-    
-    timer.current = setTimeout(() => {
-      setTimeExpired(true)
-      resultDialog.current.openDialog()
-    }, targetTime * 1000)
-
-    setStartChallenge(true)
+    timer.current = setInterval(() => {
+      setTimeRemaining(prevTimeRemaining => prevTimeRemaining - 10)
+    }, 10)
   }
 
   const handleStop = () => {
-    clearTimeout(timer.current)
+    clearInterval(timer.current)
+    resultDialog.current.openDialog()
+  }
+
+  if (timeRemaining <= 0){
+    handleExpired()
   }
 
   return (
     <>
-    <ResultModal ref={resultDialog} result={"Lost"} targetTime={targetTime} />
-    <section className='challenge'>
-        <h2>{ title }</h2>
+      <ResultModal 
+        ref={resultDialog} 
+        timeRemaining={timeRemaining} 
+        resetTime={handleTimeReset}
+        targetTime={targetTime} />
+      <section className='challenge'>
+        <h2>{title}</h2>
         <p className='challenge-time'>
-            { targetTime } second{targetTime > 1 ? 's': ''}
+          {targetTime} second{targetTime > 1 ? 's' : ''}
         </p>
         <p>
-            <button onClick={startChallenge ? handleStop : handleStart}>
-              {startChallenge ? 'Stop' : 'Start' } challenge
-            </button>
+          <button onClick={timerIsActive ? handleStop : handleStart}>
+            {timerIsActive ? 'Stop' : 'Start'} challenge
+          </button>
         </p>
-        <p className={startChallenge ? 'active' : undefined}>
-            {startChallenge ? 'Time is running' : 'Timer inactive'}
+        <p className={timerIsActive ? 'active' : undefined}>
+          {timerIsActive ? 'Time is running' : 'Timer inactive'}
         </p>
-    </section>
+      </section>
     </>
   )
 }
