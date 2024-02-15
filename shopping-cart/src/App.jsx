@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Product from './components/Product.jsx'
 
 import Header from './components/Header.jsx';
 import Shop from './components/Shop.jsx';
@@ -71,7 +72,13 @@ function App() {
         cart={shoppingCart}
         onUpdateCartItemQuantity={handleUpdateCartItemQuantity}
       />
-      <Shop onAddItemToCart={handleAddItemToCart} />
+      <Shop onAddItemToCart={handleAddItemToCart} >
+        {DUMMY_PRODUCTS.map((product) => (
+          <li key={product.id}>
+            <Product {...product} onAddToCart={handleAddItemToCart} />
+          </li>
+        ))}
+      </Shop>
     </>
   );
 }
