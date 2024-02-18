@@ -68,10 +68,6 @@ const CartContextProvider = ({children}) => {
         useReducer(shoppingCartReducer, {
         items: [],
       })
-
-    const [shoppingCart, setShoppingCart] = useState({
-        items: [],
-      });
     
       function handleAddItemToCart(id) {
         shoppingCartDispatch({
