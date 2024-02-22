@@ -6,29 +6,19 @@ import Modal from './components/Modal.jsx';
 import DeleteConfirmation from './components/DeleteConfirmation.jsx';
 import logoImg from './assets/logo.png';
 
+const key_selectedPlaces = 'selectdPlaces'
+const storeIds = JSON.parse(localStorage.getItem(key_selectedPlaces)) || []
+const storedPlaces = storeIds.map((id) => 
+  AVAILABLE_PLACES.find((place) => place.id === id)
+)
+
 function App() {
-  const key_selectedPlaces = 'selectdPlaces'
   const modal = useRef();
   const selectedPlace = useRef();
-  const [pickedPlaces, setPickedPlaces] = useState([]);
+  const [pickedPlaces, setPickedPlaces] = useState(storedPlaces);
   const [availablePlaces, setAvailablePlaces] = useState([]);
 
-
-  useEffect(() => {
-    const storedPlaces = getStoredPlaces() 
-    setPickedPlaces(storedPlaces)
-   }, [])
-
   useEffect(() => { handleSortingPlaces() }, [])
-
-  function getStoredPlaces() {
-    const storeIds = JSON.parse(localStorage.getItem(key_selectedPlaces)) || []
-    const storedPlaces = storeIds.map((id) => 
-      AVAILABLE_PLACES.find((place) => place.id === id)
-    )
-
-    return storedPlaces
-  }
 
   function handleSortingPlaces() {
     navigator.geolocation.getCurrentPosition((pos) => {
